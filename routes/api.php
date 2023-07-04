@@ -23,7 +23,7 @@ Route::group(['prefix'=>'/lab08'],function(){
     Route::get('cars',[CarController::class,'index']);
     Route::post('register_car',[CarController::class,'create']);
 
-    Route::get('get_free_spaces',[ParkingController::class,'get_free_spaces']);
+    Route::get('free_spaces',[ParkingController::class,'get_free_spaces']);
     Route::get('car_enters/{registration}',[ParkingController::class,'car_enters']);
     Route::get('car_exits/{registration}',[ParkingController::class,'car_exits']);
 
