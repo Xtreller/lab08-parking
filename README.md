@@ -32,3 +32,7 @@ EXAMPLE: http://127.0.0.1:8000/api/lab08/free_spaces
 | GET  | /car_exits/{registration}  | removes car from parking | |
 
 
+## Versions
+- PHP - 8.2.4
+- Laravel - ^9
+
