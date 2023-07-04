@@ -54,6 +54,7 @@ class ParkingController extends Controller
                 $car_parked['car_id'] = $car->id;
                 $car_parked['exit_time'] = Carbon::now();
                 $car_parked->save();
+                $car['time_spent'] = duration($car_parked['entry_time'],$car_parked['exit_time']);
                 $free_spaces += $car->car_type->space_needed;
                 $parking['free_spaces'] = $free_spaces;
                 $parking->save();

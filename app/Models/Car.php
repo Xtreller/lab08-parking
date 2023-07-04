@@ -43,6 +43,24 @@ class Car extends Model
         }
         return $duration;
     }
+    protected function getDayHoursAttribute()
+    {
+        $day_hrs = 0;
+        foreach($this->parkings as $parking){
+            $day_hrs += getDayNightHourCount($parking->entry_time,$parking->exit_time)['day'];
+        }
+        return $day_hrs;
+    }
+
+    protected function getNightHoursAttribute()
+    {
+        $night_hrs = 0;
+        foreach($this->parkings as $parking){
+            $night_hrs += getDayNightHourCount($parking->entry_time,$parking->exit_time)['night'];
+        }
+        return $night_hrs;
+    }
+
     protected function getAmountSpentAttribute()
     {
         $day_hrs = 0;

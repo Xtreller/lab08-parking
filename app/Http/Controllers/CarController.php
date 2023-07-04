@@ -45,7 +45,7 @@ class CarController extends Controller
     public function get_amount($registration){
             $car = Car::with('parkings')->where('registration',$registration)->first();
             if(!is_null($car)){
-                return response()->json(['status'=>'ok','amount_spent'=>number_format($car->amount_spent,2,'.','').'лв','time_spent'=>$car->time_spent.' пълни часа и може би няколко минути. 😉'],200);
+                return response()->json(['status'=>'ok','day_hrs'=>$car->day_hours,'night_hrs'=>$car->night_hours,'amount_spent'=>number_format($car->amount_spent,2,'.','').'лв','time_spent'=>$car->time_spent.'ч.'],200);
             }
             else{
                 return response()->json(['status'=>'fail','message'=>'No such car!'],404);
