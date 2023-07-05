@@ -78,9 +78,12 @@ class Car extends Model
             $day_hrs += getDayNightHourCount($parking->entry_time, $parking->exit_time)['day'];
             $night_hrs += getDayNightHourCount($parking->entry_time, $parking->exit_time)['night'];
         }
-        //assuming the discount is per price (day/night);
+        //assuming the discount is for the whole price;
 
-        $amount = ((($day_hrs * $this->day_price)-($this->discount_percent/100)) + (($night_hrs * $this->night_price)-($this->discount_percent/100)));
+        $amount = (($day_hrs * $this->day_price) + ($night_hrs * $this->night_price));
+        if($amount == 0 && is_null($this->discount_percent)){
+            $amount-=($amount * ($this->discount_percent/100));
+        }
           return $amount;
     }
 }

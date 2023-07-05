@@ -27,13 +27,18 @@ class ParkingController extends Controller
         $parking = Parking::first();
         $free_spaces = $parking->free_spaces;
         if (!is_null($car) && !is_null($parking)) {
+            if($free_spaces-$car->car_type->space_needed < 0){
+                return response()->json(['status' => 'fail', 'message' => 'Sorry we\'r out of space'], 409);
+            }
             $car_parked = CarParkings::where('car_id', $car->id)->whereNull('exit_time')->first();
             if (is_null($car_parked)) {
                 $car_parked = new CarParkings();
                 $car_parked['car_id'] = $car->id;
                 $car_parked['entry_time'] = Carbon::now();
                 $car_parked->save();
+
                 $free_spaces -= $car->car_type->space_needed;
+
                 $parking['free_spaces'] = $free_spaces;
                 $parking->save();
             } else {
@@ -54,7 +59,9 @@ class ParkingController extends Controller
                 $car_parked['car_id'] = $car->id;
                 $car_parked['exit_time'] = Carbon::now();
                 $car_parked->save();
-                $car['time_spent'] = duration($car_parked['entry_time'],$car_parked['exit_time']);
+                $car['parking_time'] += duration($car_parked['entry_time'],$car_parked['exit_time']);
+                $car['amount_spent'] = $car->amount_spent;
+                $car->save();
                 $free_spaces += $car->car_type->space_needed;
                 $parking['free_spaces'] = $free_spaces;
                 $parking->save();

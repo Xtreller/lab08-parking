@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Car;
+use App\Models\DiscountCards;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -38,7 +39,14 @@ class CarController extends Controller
         $car['registration']=$data['registration'];
         $car['type']=$data['type'];
         $car['parking_places']=$data['parking_places'];
-        isset($data['discount_card_id']) && $data['discount_card'] != ''? $car['discount_card']=$data['discount_card']:"";
+        if(isset($data['discount_card']) && $data['discount_card'] != '')
+        {
+            $card = DiscountCards::find($data['discount_card']);
+            if(is_null($card)){
+                return response()->json(['status'=>'fail','message'=>'Discount card doesn\'t exists!']);
+            }
+            $car['discount_card_id'] = $card->id;
+        }
         $car->save();
         return response()->json(['status'=>'ok','data'=>$car]);
     }
