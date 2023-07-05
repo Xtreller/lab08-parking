@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+
 function getDayNightHourCount($startDateTime, $endDateTime)
 {
     // Convert the date strings to DateTime objects
@@ -14,12 +15,13 @@ function getDayNightHourCount($startDateTime, $endDateTime)
     // Loop through each hour between the start and end dates
     while ($start < $end) {
         // Check if the current hour is during the day (6 AM to 6 PM)
-        if ($start->format('G') >= 6 && $start->format('G') < 18) {
-            $dayHours++;
-        } else {
-            $nightHours++;
+        if (duration($startDateTime, $endDateTime)) {
+            if ($start->format('G') >= 6 && $start->format('G') < 18) {
+                $dayHours++;
+            } else {
+                $nightHours++;
+            }
         }
-
         // Increment the hour
         $start->add(new DateInterval('PT1H'));
     }

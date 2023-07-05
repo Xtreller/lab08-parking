@@ -16,38 +16,47 @@ class Car extends Model
         'parking_place' => 'required|min:1',
 
     ];
-    public function car_type(){
-        return $this->hasOne(CarType::class,'id','type');
+    public function car_type()
+    {
+        return $this->hasOne(CarType::class, 'id', 'type');
     }
-    public function parkings(){
+    public function parkings()
+    {
         return $this->hasMany(CarParkings::class)->whereNotNull('exit_time');
     }
-    public function discount_card(){
-        return $this->hasOne(DiscountCards::class,'id','discount_card_id');
+    public function discount_card()
+    {
+        return $this->hasOne(DiscountCards::class, 'id', 'discount_card_id');
     }
-    protected function getDayPriceAttribute($value){
+    protected function getDayPriceAttribute($value)
+    {
         return $this->car_type->day_price;
     }
-    protected function getNightPriceAttribute($value){
+    protected function getNightPriceAttribute($value)
+    {
         return $this->car_type->night_price;
     }
-    protected function getDiscountPercentAttribute(){
-        if(!is_null($this->discount_card)){
+    protected function getDiscountPercentAttribute()
+    {
+        if (!is_null($this->discount_card)) {
             return $this->discount_card->discount;
         }
+        return 0;
     }
-    protected function getTimeSpentAttribute(){
+    protected function getTimeSpentAttribute()
+    {
         $duration = 0;
-        foreach($this->parkings as $parking){
-            $duration += duration($parking->entry_time,$parking->exit_time);
+        foreach ($this->parkings as $parking) {
+            $duration += duration($parking->entry_time, $parking->exit_time);
+
         }
         return $duration;
     }
     protected function getDayHoursAttribute()
     {
         $day_hrs = 0;
-        foreach($this->parkings as $parking){
-            $day_hrs += getDayNightHourCount($parking->entry_time,$parking->exit_time)['day'];
+        foreach ($this->parkings as $parking) {
+            $day_hrs += getDayNightHourCount($parking->entry_time, $parking->exit_time)['day'];
         }
         return $day_hrs;
     }
@@ -55,8 +64,8 @@ class Car extends Model
     protected function getNightHoursAttribute()
     {
         $night_hrs = 0;
-        foreach($this->parkings as $parking){
-            $night_hrs += getDayNightHourCount($parking->entry_time,$parking->exit_time)['night'];
+        foreach ($this->parkings as $parking) {
+            $night_hrs += getDayNightHourCount($parking->entry_time, $parking->exit_time)['night'];
         }
         return $night_hrs;
     }
@@ -65,11 +74,13 @@ class Car extends Model
     {
         $day_hrs = 0;
         $night_hrs = 0;
-        foreach($this->parkings as $parking){
-            $day_hrs += getDayNightHourCount($parking->entry_time,$parking->exit_time)['day'];
-            $night_hrs += getDayNightHourCount($parking->entry_time,$parking->exit_time)['night'];
+        foreach ($this->parkings as $parking) {
+            $day_hrs += getDayNightHourCount($parking->entry_time, $parking->exit_time)['day'];
+            $night_hrs += getDayNightHourCount($parking->entry_time, $parking->exit_time)['night'];
         }
-        $amount = ($day_hrs * $this->day_price) + ($night_hrs * $this->night_price);
-        return $amount;
+        //assuming the discount is per price (day/night);
+
+        $amount = ((($day_hrs * $this->day_price)-($this->discount_percent/100)) + (($night_hrs * $this->night_price)-($this->discount_percent/100)));
+          return $amount;
     }
 }
