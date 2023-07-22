@@ -19,7 +19,7 @@ class InitialData extends Seeder
         if (Schema::hasTable('parkings')) {
             DB::table('parkings')->insert(
                 [
-                    ['id'=>1,'free_spaces'=>200]
+                    ['free_spaces'=>200]
                 ]
             );
         }

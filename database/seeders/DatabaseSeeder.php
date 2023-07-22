@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         CarTypesSeeder::class;
         DiscountCarsSeeder::class;
+        InitialDataSeeder::class;
         // \App\Models\User::factory(10)->create();
     }
 }
