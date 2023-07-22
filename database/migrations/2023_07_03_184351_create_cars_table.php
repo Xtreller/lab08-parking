@@ -19,8 +19,6 @@ return new class extends Migration
             $table->integer('type')->default(1);
             $table->tinyInteger('parking_places')->default(1);
             $table->integer('discount_card_id')->nullable();
-            $table->integer('parking_time')->default(0);
-            $table->decimal('amount_spent')->default(0);
             $table->timestamps();
         });
     }

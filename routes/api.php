@@ -20,9 +20,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::group(['prefix'=>'/lab08'],function(){
+    //Car
     Route::get('cars',[CarController::class,'index']);
     Route::get('get_amount/{registration}',[CarController::class,'show']);
     Route::post('/register_car',[CarController::class,'store']);
+
+    //Parking
     Route::get('free_spaces',[ParkingController::class,'get_free_spaces']);
     Route::get('car_enters/{registration}',[ParkingController::class,'car_enters']);
     Route::get('car_exits/{registration}',[ParkingController::class,'car_exits']);

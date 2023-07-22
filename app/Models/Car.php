@@ -10,6 +10,9 @@ class Car extends Model
 {
     use HasFactory;
     protected $fillable = ['*'];
+    protected $primaryKey = 'registration';
+    public $incrementing = false;
+    protected $keyType = 'string';
     public function car_type()
     {
         return $this->hasOne(CarType::class, 'id', 'type');

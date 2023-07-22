@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('car_id');
             $table->datetime('entry_time');
             $table->datetime('exit_time')->nullable();
+            $table->tinyInteger('space');
             $table->decimal('price')->default(0);
             $table->timestamps();
         });
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('car_parkings');
     }
 };
