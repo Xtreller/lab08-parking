@@ -28,8 +28,8 @@ EXAMPLE: http://127.0.0.1:8000/api/lab08/free_spaces
 | GET  | /cars  |  returns list of cars  ||
 | GET  | /free_spaces  |   returns available spaces at the moment; ||
 | POST | /register_car  |   registers_car |  {"registration":"R1644KM", "type":1,/*[1 to 3 or add other car_types]*/"discount_card":1,/*[1 to 3 or add other discount_cards]*/}|
-| GET  | /car_enters/{registration}  | adds car to parking | |
-| GET  | /car_exits/{registration}  | removes car from parking | |
+| POST  | /car_enters  | adds car to parking | {"registration":"R1644KM"} |
+| POST  | /car_exits  | removes car from parking | {"registration":"R1644KM"} |
 | GET  | /get_amount/{registration}  | get spent amount and time for car | |
 
 
