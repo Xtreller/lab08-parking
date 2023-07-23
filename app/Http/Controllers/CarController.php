@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCarRequest;
+use App\Http\Resources\CarCollectionResource;
 use App\Http\Resources\CarResource;
 use App\Models\Car;
-use App\Models\DiscountCards;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
@@ -22,10 +21,9 @@ class CarController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Car $car):CarCollectionResource
     {
-        $cars = Car::pluck('registration')->toArray();
-        return response()->json(['status' => 'ok', 'data' => $cars], 200);
+        return new CarCollectionResource($car);
     }
 
     /**
@@ -34,7 +32,7 @@ class CarController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCarRequest $request,Car $car): CarResource
+    public function store(StoreCarRequest $request, Car $car): CarResource
     {
         $request_data = $request->all();
         $car->registration = $request_data['registration'];
@@ -44,14 +42,9 @@ class CarController extends Controller
 
         return new CarResource($car);
     }
-    public function show($registration)
+    public function show(Car $car)
     {
-        $car = Car::with('parkings')->where('registration', $registration)->first();
-        if (!is_null($car)) {
-            return new CarResource($car);
-        } else {
-            return response()->json(['status' => 'fail', 'message' => 'No such car!'], 404);
-        }
+        return new CarResource($car);
     }
 
 

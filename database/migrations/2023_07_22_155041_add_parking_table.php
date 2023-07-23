@@ -13,7 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('parkings',function(Blueprint $table){
+        Schema::create('parking',function(Blueprint $table){
+            $table->id();
             $table->integer('free_spaces')->default(200);
 
         });

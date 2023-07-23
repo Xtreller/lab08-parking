@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ParkCarRequest;
+use App\Http\Resources\ParkingResource;
 use App\Models\Car;
 use App\Models\CarParkings;
-use App\Models\CarsParking;
 use App\Models\Parking;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class ParkingController extends Controller
 {
@@ -17,58 +17,61 @@ class ParkingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get_free_spaces()
+    public function show(): ParkingResource
     {
-        return response()->json(['free_spaces' => Parking::first()->free_spaces]);
+        return new ParkingResource(Parking::first());
     }
-    public function car_enters($registration)
+    public function store(ParkCarRequest $request, Car $car, CarParkings $car_parked)
     {
-        $car = Car::where('registration', $registration)->with('car_type')->first();
+        $car = $car::where('registration', $request->all()['registration'])->with('carType')->first();
         $parking = Parking::first();
+
         $free_spaces = $parking->free_spaces;
+
         if (!is_null($car) && !is_null($parking)) {
-            if($free_spaces-$car->car_type->space_needed < 0){
-                return response()->json(['status' => 'fail', 'message' => 'Sorry we\'r out of space'], 409);
+            if ($free_spaces - $car->carType->space_needed < 0) {
+                return response()->json(['status' => 'fail', 'message' => 'Няма свободни места!'], 409);
             }
-            $car_parked = CarParkings::where('car_id', $car->id)->whereNull('exit_time')->first();
+            $car_parked = CarParkings::where('car_registration', $request['registration'])->whereNull('exit_time')->first();
             if (is_null($car_parked)) {
                 $car_parked = new CarParkings();
-                $car_parked['car_id'] = $car->id;
+                $car_parked['car_registration'] = $car->registration;
                 $car_parked['entry_time'] = Carbon::now();
+                $car_parked['space'] = $car->carType->space_needed;
                 $car_parked->save();
-
-                $free_spaces -= $car->car_type->space_needed;
-
-                $parking['free_spaces'] = $free_spaces;
-                $parking->save();
-            } else {
-                return response()->json(['status' => 'fail', 'message' => 'Car ' . $car->registration . ' already parked!'], 409);
+                $free_spaces -= $car->carType->space_needed;
+                $parking->update(['free_spaces' => $free_spaces]);
+            }
+            else{
+                return response()->json(['status'=>'fail','message'=>'Кола с рег.номер ' . $car->registration . ' вече е паркирана!']);
             }
         }
-
-        return response()->json(['free_spaces' => $free_spaces]);
+        return new ParkingResource($parking);
+        // return response()->json(['free_spaces' => $free_spaces]);
     }
-    public function car_exits($registration)
+    public function update(ParkCarRequest $request, CarParkings $car_parked, Car $car)
     {
-        $car = Car::where('registration', $registration)->with('car_type')->first();
+        $car = $car::where('registration', $request->all()['registration'])->with('carType')->first();
+        $parking = Parking::first();
+
+        $free_spaces = $parking->free_spaces;
+        // $car = Car::where('registration', $registration)->with('car_type')->first();
         $parking = Parking::first();
         $free_spaces = $parking->free_spaces;
         if (!is_null($car) && !is_null($parking)) {
-            $car_parked = CarParkings::where('car_id', $car->id)->whereNull('exit_time')->first();
+            $car_parked = CarParkings::where('car_registration', $car->registration)->whereNull('exit_time')->first();
             if (!is_null($car_parked)) {
-                $car_parked['car_id'] = $car->id;
+                $car_parked['car_registration'] = $car->registration;
                 $car_parked['exit_time'] = Carbon::now();
                 $car_parked->save();
-                $car['parking_time'] += duration($car_parked['entry_time'],$car_parked['exit_time']);
-                $car['amount_spent'] = $car->amount_spent;
-                $car->save();
-                $free_spaces += $car->car_type->space_needed;
-                $parking['free_spaces'] = $free_spaces;
-                $parking->save();
+                $free_spaces += $car->carType->space_needed;
+                $parking->update(['free_spaces' => $free_spaces]);
             } else {
-                return response()->json(['status' => 'fail', 'message' => 'Car ' . $car->registration . ' is not parked!'], 409);
+                return response()->json(['status' => 'fail', 'message' => 'Кола с рег.номер ' . $car->registration . ' не е паркирана!'], 409);
             }
         }
-        return response()->json(['free_spaces' => Parking::first()->free_spaces]);
+        return new ParkingResource($parking);
+
+        // return response()->json(['free_spaces' => Parking::first()->free_spaces]);
     }
 }

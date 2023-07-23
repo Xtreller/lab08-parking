@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('car_parkings',function(Blueprint $table){
             $table->id();
-            $table->integer('car_id');
+            $table->string('car_registration');
             $table->datetime('entry_time');
             $table->datetime('exit_time')->nullable();
             $table->tinyInteger('space');

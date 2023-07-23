@@ -13,7 +13,7 @@ class Car extends Model
     protected $primaryKey = 'registration';
     public $incrementing = false;
     protected $keyType = 'string';
-    public function car_type()
+    public function carType()
     {
         return $this->hasOne(CarType::class, 'id', 'type');
     }
@@ -21,17 +21,20 @@ class Car extends Model
     {
         return $this->hasMany(CarParkings::class)->whereNotNull('exit_time');
     }
-    public function discount_card()
+    public function discountCard()
     {
         return $this->hasOne(DiscountCards::class, 'id', 'discount_card_id');
     }
     protected function getDayPriceAttribute($value)
     {
-        return $this->car_type->day_price;
+        // dd($this);
+        return $value;
+        // return $this->carType['day_price'];
     }
     protected function getNightPriceAttribute($value)
     {
-        return $this->car_type->night_price;
+        return $value;
+        // return $this->carType['night_price'];
     }
     protected function getDiscountPercentAttribute()
     {
@@ -45,7 +48,6 @@ class Car extends Model
         $duration = 0;
         foreach ($this->parkings as $parking) {
             $duration += duration($parking->entry_time, $parking->exit_time);
-
         }
         return $duration;
     }

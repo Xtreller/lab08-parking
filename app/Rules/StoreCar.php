@@ -31,7 +31,7 @@ class StoreCar implements Rule,DataAwareRule
         if (isset($this->data['discount_card']) && $this->data['discount_card'] != '') {
             $card = DiscountCards::find($this->data['discount_card']);
             if (is_null($card)) {
-                return response()->json(['status' => 'fail', 'message' => 'Discount card doesn\'t exists!']);
+                return response()->json(['status' => 'fail', 'message' => 'Няма такава карта за отстъпка']);
             }
             return true;
         }

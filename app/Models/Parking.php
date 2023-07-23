@@ -8,5 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Parking extends Model
 {
     use HasFactory;
-    protected $fillable = ['*'];
+    public $timestamps = false;
+    protected $fillable = ['free_spaces'];
+    protected $table='parking';
 }
