@@ -10,6 +10,7 @@ use Tests\TestCase;
 
 class CarTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      *
@@ -53,9 +54,9 @@ class CarTest extends TestCase
             'discount_card' => 2,
             "parking_places" => 2,
         ];
-        // $this->post('/api/lab08/register_car', $data)
-        //     ->assertStatus(201)
-        //     ->assertJson(['data' => ['status' => 'ok']]);
+        $this->post('/api/lab08/register_car', $data)
+            ->assertStatus(201)
+            ->assertJson(['data' => ['status' => 'ok']]);
         $response = $this->json('POST', 'api/lab08/register_car', $data);
         $response
             ->assertStatus(422)
