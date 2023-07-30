@@ -64,6 +64,21 @@ class CarTest extends TestCase
                 'message' => "Този регистрационен номер вече съществува!"
             ]);
     }
+    public function test_register_car_discount_validation()
+    {
+
+        $data = [
+            'registration' => '000001',
+            'type' => 1,
+            'discount_card' => 51345143,
+            "parking_places" => 2,
+        ];
+        $this->json('POST', 'api/lab08/register_car', $data)
+            ->assertStatus(422)
+            ->assertJson([
+                'message' => "Картата за остъпка се посочва по id (1,2 или 3) или по име (silver,gold или platinum)!"
+            ]);
+    }
     public function test_car_resource_contains_expected_fields()
     {
         // Create a Car instance. You might need to modify this to match your actual Car model and its fields.

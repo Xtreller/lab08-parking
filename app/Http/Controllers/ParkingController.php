@@ -46,7 +46,7 @@ class ParkingController extends Controller
                 return response()->json(['status' => 'fail', 'message' => 'Кола с рег.номер ' . $car->registration . ' вече е паркирана!'], 422);
             }
         }
-        return response()->json(['status' => 'fail', 'message' => 'Car or parking not initialized!'], 404);
+        return response()->json(['status' => 'fail', 'message' => 'Car or parking not found!'], 404);
 
     }
     public function update(ParkCarRequest $request, CarParkings $car_parked, Car $car)
@@ -70,6 +70,6 @@ class ParkingController extends Controller
                 return response()->json(['status' => 'fail', 'message' => 'Кола с рег.номер ' . $car->registration . ' не е паркирана!'], 422);
             }
         }
-        return response()->json(['status' => 'fail', 'message' => 'Car or parking not initialized!'], 404);
+        return response()->json(['status' => 'fail', 'message' => 'Car or parking not found!'], 404);
     }
 }

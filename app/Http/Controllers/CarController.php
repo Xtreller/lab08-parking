@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCarRequest;
 use App\Http\Resources\CarCollectionResource;
 use App\Http\Resources\CarResource;
 use App\Models\Car;
+use App\Models\DiscountCards;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
@@ -21,7 +22,7 @@ class CarController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Car $car):CarCollectionResource
+    public function index(Car $car): CarCollectionResource
     {
         return new CarCollectionResource($car);
     }
@@ -38,6 +39,8 @@ class CarController extends Controller
         $car->registration = $request_data['registration'];
         $car->type = $request_data['type'];
         $car->parking_places = $request_data['parking_places'];
+        $discount = DiscountCards::where('id',$request_data['discount_card'])->orWhere('name',$request_data['discount_card'])->first();
+        $car->discount_card_id = $discount->id;
         $car->save();
 
         return new CarResource($car);

@@ -16,7 +16,11 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
     2. composer install
     3. php artisan migrate
     4. php artisan db:seed
+
+## IMPORTANT
+ADD Accept - "aplication/json" header
 ## ENDPOINTS
+
 
 > **_NOTE:_** All endpoints have prefix "/api/lab08/" and returns json object;
 

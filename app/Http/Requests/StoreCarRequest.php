@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\DiscountExists;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCarRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreCarRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize():bool
     {
         return true;
     }
@@ -27,6 +28,7 @@ class StoreCarRequest extends FormRequest
             'registration' => ['required', 'unique:cars,registration'],
             'type' => ['required', 'min:1'],
             'parking_places' => ['required'],
+            'discount_card' => ['sometimes','required',new DiscountExists]
         ];
     }
     public function messages()
@@ -36,6 +38,7 @@ class StoreCarRequest extends FormRequest
             'registration.unique' => 'Този регистрационен номер вече съществува!',
             'type' => 'Moля изберете тип!',
             'parking_places' => 'Моля попълнете нужните места за да се паркира колата!',
+            'discount_card.required' => 'Картата за остъпка се посочва по id (1,2 или 3) или по име (silver,gold или platinum)!',
         ];
     }
 }

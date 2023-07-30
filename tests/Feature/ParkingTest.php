@@ -29,7 +29,6 @@ class ParkingTest extends TestCase
         $parking = Parking::factory()->create(['free_spaces' => 1]);
         $car_type = CarType::factory()->create(['space_needed' => 3]);
         $car = Car::factory()->create(['type' => $car_type->id]);
-        // dd($car->carType());
         $data = ['registration' => $car->registration];
         $this->post('/api/lab08/car_enters', $data)
             ->assertStatus(422)
@@ -56,7 +55,6 @@ class ParkingTest extends TestCase
         $parking = Parking::factory()->create();
         $car_type = CarType::factory()->create();
         $car = Car::factory()->create(['type' => $car_type->id]);
-        // dd($car->carType());
         $data = ['registration' => $car->registration];
         $this->post('/api/lab08/car_enters', $data)
             ->assertJson(['data' => ['free_spaces' => $parking->free_spaces - $car_type->space_needed]])
@@ -68,7 +66,6 @@ class ParkingTest extends TestCase
         $parking = Parking::factory()->create();
         $car_type = CarType::factory()->create(['space_needed' => 3]);
         $car = Car::factory()->create(['type' => $car_type->id]);
-        // dd($car->carType());
         $data = ['registration' => $car->registration];
 
         $this->post('/api/lab08/car_enters', $data)
@@ -96,15 +93,11 @@ class ParkingTest extends TestCase
     public function test_car_exits_validation_not_found()
     {
         $parking = Parking::factory()->create();
-        // $car_type = CarType::factory()->create(['space_needed' => 3]);
-        // $car = Car::factory()->create(['type' => $car_type->id]);
+
         $data = ['registration' => 'randomnum'];
 
         $this->post('/api/lab08/car_exits', $data)
             ->assertStatus(404);
-            // ->assertJson(['message' => 'Кола с рег.номер ' . $car->registration . ' не е паркирана!', 'status' => 'fail']);
-
-
     }
 
 }
