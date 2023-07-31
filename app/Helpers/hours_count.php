@@ -13,7 +13,7 @@ function getDayNightHourCount($startDateTime, $endDateTime)
     $nightHours = 0;
 
     // Loop through each hour between the start and end dates
-    while ($start < $end) {
+    while ($start->format('G') < $end->format('G')) {
         // Check if the current hour is during the day (6 AM to 6 PM)
         if (duration($startDateTime, $endDateTime)) {
             if ($start->format('G') >= 6 && $start->format('G') < 18) {

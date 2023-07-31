@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Http\Resources\CarResource;
 use App\Models\Car;
+use App\Models\CarType;
+use App\Models\DiscountCards;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -47,11 +49,10 @@ class CarTest extends TestCase
 
     public function test_register_car()
     {
-
+        $car_type = CarType::factory()->create();
         $data = [
             'registration' => '000001',
-            'type' => 1,
-            'discount_card' => 2,
+            'type' => $car_type->id,
             "parking_places" => 2,
         ];
         $this->post('/api/lab08/register_car', $data)
@@ -67,9 +68,10 @@ class CarTest extends TestCase
     public function test_register_car_discount_validation()
     {
 
+        $car_type = CarType::factory()->create();
         $data = [
             'registration' => '000001',
-            'type' => 1,
+            'type' => $car_type->id,
             'discount_card' => 51345143,
             "parking_places" => 2,
         ];
@@ -81,17 +83,15 @@ class CarTest extends TestCase
     }
     public function test_car_resource_contains_expected_fields()
     {
-        // Create a Car instance. You might need to modify this to match your actual Car model and its fields.
-        $car = Car::factory()->create();
-
-        // Create a CarResource instance from the Car instance.
+        $car_type = CarType::factory()->create();
+        $car = Car::factory()->create(['type'=>$car_type->id]);
         $carResource = (new CarResource($car))->resolve();
 
-        // Assert that the CarResource contains the expected fields.
         $this->assertArrayHasKey('status', $carResource);
         $this->assertArrayHasKey('car', $carResource);
         $this->assertArrayHasKey('day_hrs', $carResource);
         $this->assertArrayHasKey('night_hrs', $carResource);
+        $this->assertArrayHasKey('discount', $carResource);
         $this->assertArrayHasKey('amount_spent', $carResource);
         $this->assertArrayHasKey('time_spent', $carResource);
     }

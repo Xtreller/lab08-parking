@@ -39,8 +39,10 @@ class CarController extends Controller
         $car->registration = $request_data['registration'];
         $car->type = $request_data['type'];
         $car->parking_places = $request_data['parking_places'];
-        $discount = DiscountCards::where('id',$request_data['discount_card'])->orWhere('name',$request_data['discount_card'])->first();
-        $car->discount_card_id = $discount->id;
+        if(isset($request_data['discount_card'])){
+            $discount = DiscountCards::where('id',$request_data['discount_card'])->orWhere('name',$request_data['discount_card'])->first();
+            $car->discount_card_id = $discount->id;
+        }
         $car->save();
 
         return new CarResource($car);
